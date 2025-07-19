@@ -1,9 +1,14 @@
 
 import streamlit as st
 from modules.data_loader import load_storico
+from modules.analisi_numeri import (
+    calcola_statistiche,
+    predict_next_intelligente,
+    calcola_pesi_numerone,
+    scegli_numerone_intelligente
+)
 from modules.utils import confronto_estrazione, aggiungi_estrazione, genera_data_ora, aggiorna_diario
 from modules.utils import rendi_10_univoci
-from modules.analisi_numeri import calcola_statistiche, predict_next_intelligente
 
 
 st.set_page_config(page_title="WFL 9.0", layout="centered", initial_sidebar_state="collapsed")
@@ -23,10 +28,19 @@ else:
 st.markdown("### 🧠 Previsione Intelligente (basata su successi ed errori)")
 
 if st.button("Genera Previsione Intelligente"):
-    pesi = calcola_statistiche(df)
-    pred_numeri_intelligenti = predict_next_intelligente(pesi)
-    pred_numeri_intelligenti = rendi_10_univoci(pred_numeri_intelligenti)
+    pesi_numeri = calcola_statistiche(df)
+    pesi_numeroni = calcola_pesi_numerone(df)
+
+    pred_numeri = predict_next_intelligente(pesi_numeri)
+    pred_numeri = rendi_10_univoci(pred_numeri)
+
+    pred_numerone = scegli_numerone_intelligente(pesi_numeroni)
+
+    nuova_estrazione = genera_data_ora(df)
+    aggiungi_estrazione(df, pred_numeri, pred_numerone, nuova_estrazione)
+
     st.success(f"✅ Previsione registrata: {sorted(pred_numeri)} + Numerone {pred_numerone}")
+
 
 
 
