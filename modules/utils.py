@@ -31,17 +31,29 @@ def aggiungi_estrazione(df, numeri, numerone, nuova):
     df = pd.concat([df, pd.DataFrame([nuova_riga])], ignore_index=True)
     df.to_csv("storico.csv", index=False)
 
+from datetime import datetime, timedelta
+
 def genera_data_ora(df):
     if df.empty:
-        return {"estrazione": 1, "data": "2025-07-19", "ora": "07:00"}
+        return {"estrazione": 1, "data": "19/07/2025", "ora": "07:00"}
+    
     ultima = df.iloc[-1]
     estrazione = int(ultima["Estrazione"]) + 1
-    data = datetime.strptime(f"{ultima['Data']} {ultima['Ora']}", "%Y-%m-%d %H:%M")
+
+    # 💡 Legge correttamente date tipo "14/07/2025 08:00"
+    data = datetime.strptime(f"{ultima['Data']} {ultima['Ora']}", "%d/%m/%Y %H:%M")
+    
     data += timedelta(hours=1)
     if data.hour > 23:
         data += timedelta(days=1)
         data = data.replace(hour=7)
-    return {"estrazione": estrazione, "data": data.strftime("%Y-%m-%d"), "ora": data.strftime("%H:%M")}
+    
+    return {
+        "estrazione": estrazione,
+        "data": data.strftime("%d/%m/%Y"),  # Giorno/mese/anno in output
+        "ora": data.strftime("%H:%M")
+    }
+
 
 def aggiorna_diario(df, numeri, numerone, nuova):
     with open("diario.txt", "a") as f:
