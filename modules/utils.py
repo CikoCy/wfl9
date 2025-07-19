@@ -58,3 +58,23 @@ def genera_data_ora(df):
 def aggiorna_diario(df, numeri, numerone, nuova):
     with open("diario.txt", "a") as f:
         f.write(f"[{nuova['estrazione']}] {nuova['data']} {nuova['ora']} => {numeri} + Numerone {numerone}\n")
+
+def rendi_10_univoci(numeri_predetti):
+    numeri_finali = []
+    visti = set()
+
+    for n in numeri_predetti:
+        if n not in visti:
+            numeri_finali.append(n)
+            visti.add(n)
+        if len(numeri_finali) == 10:
+            break
+
+    for n in range(1, 21):
+        if len(numeri_finali) == 10:
+            break
+        if n not in visti:
+            numeri_finali.append(n)
+
+    return numeri_finali
+
