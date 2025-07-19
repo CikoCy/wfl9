@@ -36,7 +36,7 @@ def genera_data_ora(df):
         return {"estrazione": 1, "data": "2025-07-19", "ora": "07:00"}
     ultima = df.iloc[-1]
     estrazione = int(ultima["Estrazione"]) + 1
-    data = datetime.strptime(f"{ultima['Data']} {ultima['Ora']}", "%Y-%m-%d %H:%M")
+    data = datetime.strptime(f"{ultima['Data']} {ultima['Ora']}", "%d/%m/%Y %H:%M")
     data += timedelta(hours=1)
     if data.hour > 23:
         data += timedelta(days=1)
