@@ -58,6 +58,9 @@ def genera_data_ora(df):
 def aggiorna_diario(df, numeri, numerone, nuova):
     with open("diario.txt", "a") as f:
         f.write(f"[{nuova['estrazione']}] {nuova['data']} {nuova['ora']} => {numeri} + Numerone {numerone}\n")
+        confronto = confronto_estrazione(df, numeri, numerone)
+        f.write(f" --> Match: {confronto['match']} numeri, Numerone: {'✔️' if confronto['numerone_match'] else '❌'}\n\n")
+
 
 def rendi_10_univoci(numeri_predetti):
     numeri_finali = []
