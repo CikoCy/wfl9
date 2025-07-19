@@ -10,8 +10,10 @@ st.title("🔮 WFL 9.0 - Previsione Win for Life")
 st.markdown("### 📥 Caricamento storico")
 df = load_storico()
 
-if df.empty:
-    st.warning("Il file storico è vuoto. Aggiungi la prima estrazione.")
+if df is None or df.empty:
+    st.warning("⚠️ Storico vuoto o errore nel caricamento.")
+    st.stop()
+
 else:
     st.dataframe(df.tail(3))
 
