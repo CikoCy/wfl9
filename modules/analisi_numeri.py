@@ -35,3 +35,31 @@ def predict_next_intelligente(pesi, k=10):
         if len(unici) == k:
             break
     return unici
+
+
+def calcola_pesi_numerone(df):
+    stats = {n: {"predetti": 0, "indovinati": 0} for n in range(1, 21)}
+
+    for i in range(1, len(df)):
+        pred = df.iloc[i - 1]["Numerone"]
+        reale = df.iloc[i]["Numerone"]
+
+        stats[pred]["predetti"] += 1
+        if pred == reale:
+            stats[pred]["indovinati"] += 1
+
+    pesi = {}
+    for n in stats:
+        p = stats[n]
+        if p["predetti"] == 0:
+            pesi[n] = 0.1
+        else:
+            pesi[n] = max(0.1, round(p["indovinati"] / p["predetti"], 3))
+
+    return pesi
+
+import random
+
+def scegli_numerone_intelligente(pesi):
+    return random.choices(list(pesi.keys()), weights=list(pesi.values()), k=1)[0]
+
