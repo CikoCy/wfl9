@@ -4,6 +4,7 @@ from modules.data_loader import load_storico
 from modules.model_sklearn import train_model, predict_next, save_model, load_model
 from modules.utils import confronto_estrazione, aggiungi_estrazione, genera_data_ora, aggiorna_diario
 from modules.utils import rendi_10_univoci
+from modules.analisi_numeri import calcola_statistiche, predict_next_intelligente
 
 
 st.set_page_config(page_title="WFL 9.0", layout="centered", initial_sidebar_state="collapsed")
@@ -30,6 +31,14 @@ if st.button("Genera Previsione"):
     pred_numeri = rendi_10_univoci(pred_numeri)  # garantisce 10 numeri univoci
     st.success(f"Numeri Previsti: {pred_numeri}")
     st.info(f"Numerone Previsto: {pred_numerone}")
+
+st.markdown("### 🧠 Previsione Intelligente (basata su successi ed errori)")
+
+if st.button("Genera Previsione Intelligente"):
+    pesi = calcola_statistiche(df)
+    pred_numeri_intelligenti = predict_next_intelligente(pesi)
+    pred_numeri_intelligenti = rendi_10_univoci(pred_numeri_intelligenti)
+    st.success(f"Numeri Intelligenti: {pred_numeri_intelligenti}")
 
 
 st.markdown("### 🎯 Inserisci nuova estrazione reale")
