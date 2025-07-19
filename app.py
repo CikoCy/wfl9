@@ -42,8 +42,6 @@ if st.button("Genera Previsione Intelligente"):
     st.success(f"✅ Previsione registrata: {sorted(pred_numeri)} + Numerone {pred_numerone}")
 
 
-
-
 st.markdown("### 🎯 Inserisci nuova estrazione reale")
 estrazione_input = st.text_input("Inserisci i 10 numeri + numerone separati da spazio (es: 1 2 3 4 5 6 7 8 9 10 15)")
 if estrazione_input:
@@ -56,9 +54,9 @@ if estrazione_input:
             nuova_estrazione = genera_data_ora(df)
             aggiorna_diario(df, numeri, numerone, nuova_estrazione)
             aggiungi_estrazione(df, numeri, numerone, nuova_estrazione)
-            save_model(train_model(df))
-            st.success("Estrazione aggiunta e modello aggiornato.")
+            st.success("✅ Estrazione reale aggiunta.")
             confronto = confronto_estrazione(df, numeri, numerone)
             st.json(confronto)
     except Exception as e:
         st.error(f"Errore: {e}")
+
