@@ -3,6 +3,8 @@ import streamlit as st
 from modules.data_loader import load_storico
 from modules.model_sklearn import train_model, predict_next, save_model, load_model
 from modules.utils import confronto_estrazione, aggiungi_estrazione, genera_data_ora, aggiorna_diario
+from modules.utils import rendi_10_univoci
+
 
 st.set_page_config(page_title="WFL 9.0", layout="centered", initial_sidebar_state="collapsed")
 st.title("🔮 WFL 9.0 - Previsione Win for Life")
@@ -25,8 +27,10 @@ if model is None:
 st.markdown("### 🤖 Previsione automatica")
 if st.button("Genera Previsione"):
     pred_numeri, pred_numerone = predict_next(model, df)
+    pred_numeri = rendi_10_univoci(pred_numeri)  # garantisce 10 numeri univoci
     st.success(f"Numeri Previsti: {pred_numeri}")
     st.info(f"Numerone Previsto: {pred_numerone}")
+
 
 st.markdown("### 🎯 Inserisci nuova estrazione reale")
 estrazione_input = st.text_input("Inserisci i 10 numeri + numerone separati da spazio (es: 1 2 3 4 5 6 7 8 9 10 15)")
