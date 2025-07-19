@@ -45,5 +45,4 @@ def genera_data_ora(df):
 
 def aggiorna_diario(df, numeri, numerone, nuova):
     with open("diario.txt", "a") as f:
-        f.write(f"[{nuova['estrazione']}] {nuova['data']} {nuova['ora']} => {numeri} + Numerone {numerone}
-")
+        f.write(f"[{nuova['estrazione']}] {nuova['data']} {nuova['ora']} => {numeri} + Numerone {numerone}\n")
