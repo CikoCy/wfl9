@@ -1,14 +1,17 @@
-
 import pandas as pd
-import os
+import ast
 
-FILE = "storico.csv"
+def load_storico(path="storico.csv"):
+    try:
+        df = pd.read_csv(path)
+        if df.empty:
+            return None
 
-def load_storico():
-    if not os.path.exists(FILE):
-        df = pd.DataFrame(columns=["Estrazione", "Data", "Ora", "10 Numeri", "Numerone"])
-        df.to_csv(FILE, index=False)
-    df = pd.read_csv(FILE)
-    if not df.empty:
-        df["10 Numeri"] = df["10 Numeri"].apply(lambda x: list(map(int, str(x).strip("[]").split())))
-    return df
+        # Converte SOLO se serve
+        if isinstance(df["10 Numeri"].iloc[0], str):
+            df["10 Numeri"] = df["10 Numeri"].apply(ast.literal_eval)
+
+        return df
+    except Exception as e:
+        print(f"Errore nel caricamento dello storico: {e}")
+        return None
