@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 
 def confronto_estrazione(df, numeri, numerone):
-    if df.empty:
+    if df.empty or len(df) < 2:
         return {"match": 0, "numerone_match": False, "dettaglio": {}}
     last_pred = df.iloc[-2]["10 Numeri"]
     last_num = df.iloc[-2]["Numerone"]
