@@ -26,7 +26,8 @@ if st.button("Genera Previsione Intelligente"):
     pesi = calcola_statistiche(df)
     pred_numeri_intelligenti = predict_next_intelligente(pesi)
     pred_numeri_intelligenti = rendi_10_univoci(pred_numeri_intelligenti)
-    st.success(f"Numeri Intelligenti: {pred_numeri_intelligenti}")
+    st.success(f"✅ Previsione registrata: {sorted(pred_numeri)} + Numerone {pred_numerone}")
+
 
 
 st.markdown("### 🎯 Inserisci nuova estrazione reale")
