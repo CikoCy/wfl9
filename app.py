@@ -1,7 +1,6 @@
 
 import streamlit as st
 from modules.data_loader import load_storico
-from modules.model_sklearn import train_model, predict_next, save_model, load_model
 from modules.utils import confronto_estrazione, aggiungi_estrazione, genera_data_ora, aggiorna_diario
 from modules.utils import rendi_10_univoci
 from modules.analisi_numeri import calcola_statistiche, predict_next_intelligente
@@ -19,18 +18,7 @@ if df is None or df.empty:
 
 else:
     st.dataframe(df.tail(3))
-
-model = load_model()
-if model is None:
-    model = train_model(df)
-    save_model(model)
-
-st.markdown("### 🤖 Previsione automatica")
-if st.button("Genera Previsione"):
-    pred_numeri, pred_numerone = predict_next(model, df)
-    pred_numeri = rendi_10_univoci(pred_numeri)  # garantisce 10 numeri univoci
-    st.success(f"Numeri Previsti: {pred_numeri}")
-    st.info(f"Numerone Previsto: {pred_numerone}")
+    
 
 st.markdown("### 🧠 Previsione Intelligente (basata su successi ed errori)")
 
