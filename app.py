@@ -2,6 +2,7 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 import numpy as np
+from modules.modulo_auto_ottimizzazione import genera_lista_ottimizzata
 from modules.data_loader import load_storico
 from modules.analisi_numeri import (
     calcola_statistiche,
@@ -37,21 +38,18 @@ if st.button("Genera Previsione Intelligente"):
     if "Tipo" in df.columns and len(df) > 0 and df.iloc[-1]["Tipo"] == "PREVISIONE":
         st.warning("⚠️ Hai già una previsione in attesa di conferma.")
     else:
-        successi = analizza_successi(df)
-        errori = analizza_errori(df)
-        successi_n = analizza_successi_numerone(df)
-        errori_n = analizza_errori_numerone(df)
-
-        pesi = calcola_pesi_adattivi(successi, errori)
-        pesi_numerone = calcola_pesi_adattivi(successi_n, errori_n)
-
-        pred_numeri = genera_previsione_con_pesi(pesi)
-        pred_numerone = genera_previsione_con_pesi(pesi_numerone, k=1)[0]
+        pred_numeri, pesi_usati = genera_lista_ottimizzata()
+        pred_numerone = np.random.choice(pred_numeri)
 
         nuova_estrazione = genera_data_ora(df)
         aggiungi_estrazione(df, pred_numeri, pred_numerone, nuova_estrazione, tipo="PREVISIONE")
 
-        st.success(f"✅ Previsione adattiva registrata: {sorted(pred_numeri)} + Numerone {pred_numerone}")
+        st.success(f"✅ Previsione auto-ottimizzata: {sorted(pred_numeri)} + Numerone {pred_numerone}")
+
+        fig, ax = plt.subplots()
+        ax.bar(range(1, 21), pesi_usati)
+        ax.set_title("Distribuzione pesi auto-ottimizzati")
+        st.pyplot(fig)
 
 
 st.markdown("### 🎯 Inserisci nuova estrazione reale")
