@@ -1,5 +1,6 @@
 
 import streamlit as st
+import matplotlib.pyplot as plt
 from modules.data_loader import load_storico
 from modules.analisi_numeri import (
     calcola_statistiche,
@@ -145,4 +146,23 @@ if "Tipo" in df.columns:
     st.dataframe(df_filtrato.tail(15), use_container_width=True)
 else:
     st.warning("Lo storico attuale non ha la colonna 'Tipo'. Vuoi che la aggiungiamo?")
+
+with st.expander("📊 Grafico Successi vs Errori"):
+    successi = analizza_successi(df)
+    errori = analizza_errori(df)
+
+    labels = list(range(1, 21))
+    success_values = [successi[n] for n in labels]
+    error_values = [errori[n] for n in labels]
+
+    fig, ax = plt.subplots(figsize=(10, 4))
+    ax.bar(labels, success_values, label="✅ Successi", color="green", alpha=0.7)
+    ax.bar(labels, error_values, label="❌ Errori", color="red", alpha=0.4, bottom=success_values)
+
+    ax.set_xlabel("Numeri da 1 a 20")
+    ax.set_ylabel("Conteggio")
+    ax.set_title("Successi e Errori accumulati per numero")
+    ax.legend()
+    st.pyplot(fig)
+
 
