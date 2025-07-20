@@ -13,6 +13,7 @@ from modules.utils import rendi_10_univoci
 from modules.memoria_errori import analizza_errori, analizza_errori_numerone
 from modules.memoria_successi import analizza_successi, analizza_successi_numerone
 from modules.pesatura_adattiva import calcola_pesi_adattivi, genera_previsione_con_pesi
+from modules.analisi_crepa import analizza_entropia
 
 
 st.set_page_config(page_title="WFL 9.0", layout="centered", initial_sidebar_state="collapsed")
@@ -143,6 +144,20 @@ with st.expander("💥 Memoria degli Errori - Numerone"):
     riga = " | ".join([f"{n}: {errori_n[n]}" for n in range(1, 21)])
     st.markdown(f"`{riga}`")
 
+with st.expander("🌌 Analisi della Crepa: Entropia"):
+    entropie = analizza_entropia(df)
+    st.line_chart(entropie, height=200)
+
+    # Variazione tra una riga e la precedente
+    variazioni = [abs(entropie[i] - entropie[i-1]) for i in range(1, len(entropie))]
+    media_variazioni = np.mean(variazioni) if variazioni else 0
+
+    if variazioni and variazioni[-1] > 1.5 * media_variazioni:
+        st.error("🚨 Variazione anomala di entropia rilevata. Possibile crepa.")
+    elif entropie[-1] < 2.5:
+        st.warning("⚠️ Entropia insolitamente bassa. Possibile ricorrenza sospetta.")
+    else:
+        st.success("✅ Nessuna crepa rilevata in questa estrazione.")
 
 
 
