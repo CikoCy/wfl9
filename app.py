@@ -68,4 +68,16 @@ with st.expander("📖 Diario delle estrazioni"):
     except FileNotFoundError:
         st.info("Il diario è vuoto o non è stato ancora creato.")
 
+st.markdown("### 📂 Visualizzazione Storico Intelligente")
+
+tipo_filtro = st.selectbox("Filtra per tipo di riga:", options=["TUTTO", "PREVISIONE", "REALE"])
+
+df_filtrato = df.copy()
+if "Tipo" in df.columns:
+    if tipo_filtro != "TUTTO":
+        df_filtrato = df[df["Tipo"] == tipo_filtro]
+
+    st.dataframe(df_filtrato.tail(15), use_container_width=True)
+else:
+    st.warning("Lo storico attuale non ha la colonna 'Tipo'. Vuoi che la aggiungiamo?")
 
