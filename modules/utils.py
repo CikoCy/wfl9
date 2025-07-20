@@ -47,6 +47,12 @@ def genera_data_ora(df):
     if data.hour > 23:
         data += timedelta(days=1)
         data = data.replace(hour=7)
+
+    data += timedelta(hours=1)
+if data.hour > 23:
+    data += timedelta(days=1)
+    data = data.replace(hour=7)
+
     
     return {
         "estrazione": estrazione,
