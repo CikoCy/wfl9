@@ -9,7 +9,7 @@ from modules.analisi_numeri import (
 )
 from modules.utils import confronto_estrazione, aggiungi_estrazione, genera_data_ora, aggiorna_diario
 from modules.utils import rendi_10_univoci
-from modules.memoria_errori import analizza_errori
+from modules.memoria_errori import analizza_errori, analizza_errori_numerone
 from modules.memoria_successi import analizza_successi, analizza_successi_numerone
 
 
@@ -124,6 +124,12 @@ with st.expander("🎯 Memoria dei Successi - Numerone"):
     successi_n = analizza_successi_numerone(df)
     riga = " | ".join([f"{n}: {successi_n[n]}" for n in range(1, 21)])
     st.markdown(f"`{riga}`")
+
+with st.expander("💥 Memoria degli Errori - Numerone"):
+    errori_n = analizza_errori_numerone(df)
+    riga = " | ".join([f"{n}: {errori_n[n]}" for n in range(1, 21)])
+    st.markdown(f"`{riga}`")
+
 
 
 
