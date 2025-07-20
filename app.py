@@ -109,9 +109,10 @@ with st.expander("📖 Diario delle estrazioni"):
 
 with st.expander("🧠 Memoria degli Errori"):
     errori = analizza_errori(df)
-    ordinati = dict(sorted(errori.items(), key=lambda x: x[1], reverse=True))
-    st.write("📉 **Numeri più spesso sbagliati nelle previsioni:**")
-    st.write(ordinati)
+    st.write("📉 **Errori per numero (orizzontale):**")
+
+    riga = " | ".join([f"{n}: {errori[n]}" for n in range(1, 21)])
+    st.markdown(f"`{riga}`")
 
 st.markdown("### 📂 Visualizzazione Storico Intelligente")
 
