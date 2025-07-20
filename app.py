@@ -106,6 +106,12 @@ with st.expander("📖 Diario delle estrazioni"):
     except FileNotFoundError:
         st.info("Il diario è vuoto o non è stato ancora creato.")
 
+with st.expander("🧠 Memoria degli Errori"):
+    errori = analizza_errori(df)
+    ordinati = dict(sorted(errori.items(), key=lambda x: x[1], reverse=True))
+    st.write("📉 **Numeri più spesso sbagliati nelle previsioni:**")
+    st.write(ordinati)
+
 st.markdown("### 📂 Visualizzazione Storico Intelligente")
 
 tipo_filtro = st.selectbox("Filtra per tipo di riga:", options=["TUTTO", "PREVISIONE", "REALE"])
