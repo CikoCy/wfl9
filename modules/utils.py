@@ -20,16 +20,18 @@ def confronto_estrazione(df, numeri, numerone):
         }
     }
 
-def aggiungi_estrazione(df, numeri, numerone, nuova):
+def aggiungi_estrazione(df, numeri, numerone, nuova, tipo="REALE"):
     nuova_riga = {
         "Estrazione": nuova["estrazione"],
         "Data": nuova["data"],
         "Ora": nuova["ora"],
         "10 Numeri": numeri,
-        "Numerone": numerone
+        "Numerone": numerone,
+        "Tipo": tipo
     }
     df = pd.concat([df, pd.DataFrame([nuova_riga])], ignore_index=True)
     df.to_csv("storico.csv", index=False)
+
 
 from datetime import datetime, timedelta
 
