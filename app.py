@@ -80,6 +80,18 @@ if estrazione_input:
             aggiungi_estrazione(df, numeri, numerone, nuova_estrazione, tipo="REALE")
             st.success("✅ Estrazione reale aggiunta e sincronizzata con la previsione.")
 
+            # 🔁 Auto-ottimizzazione: aggiorna i pesi dinamicamente dopo ogni estrazione reale
+            successi = analizza_successi(df)
+            errori = analizza_errori(df)
+            successi_n = analizza_successi_numerone(df)
+            errori_n = analizza_errori_numerone(df)
+
+            pesi = calcola_pesi_adattivi(successi, errori)
+            pesi_numerone = calcola_pesi_adattivi(successi_n, errori_n)
+
+            st.info("🔄 Auto-ottimizzazione eseguita: pesi aggiornati.")
+
+
             # 🔍 Confronto Intelligente
             confronto = confronto_estrazione(df, numeri, numerone)
             match = confronto["match"]
