@@ -36,42 +36,57 @@ if st.button("Genera Previsione Intelligente"):
 
     pred_numerone = scegli_numerone_intelligente(pesi_numeroni)
 
+    # Genera nuova estrazione solo se non esiste una previsione in attesa
+if "Tipo" in df.columns and (len(df) > 0 and df.iloc[-1]["Tipo"] == "PREVISIONE"):
+    st.warning("⚠️ Hai già una previsione in attesa di conferma. Inserisci prima l'estrazione reale.")
+else:
     nuova_estrazione = genera_data_ora(df)
     aggiungi_estrazione(df, pred_numeri, pred_numerone, nuova_estrazione, tipo="PREVISIONE")
-
     st.success(f"✅ Previsione registrata: {sorted(pred_numeri)} + Numerone {pred_numerone}")
+
 
 
 st.markdown("### 🎯 Inserisci nuova estrazione reale")
 estrazione_input = st.text_input("Inserisci i 10 numeri + numerone separati da spazio (es: 1 2 3 4 5 6 7 8 9 10 15)")
+
 if estrazione_input:
     try:
         estratti = list(map(int, estrazione_input.strip().split()))
         if len(estratti) != 11:
             st.error("Devi inserire esattamente 10 numeri + 1 numerone.")
         else:
+            # ⚠️ Controlla se esiste una previsione da confermare
+            if len(df) == 0 or df.iloc[-1]["Tipo"] != "PREVISIONE":
+                st.error("❌ Nessuna previsione da confermare. Genera prima una previsione.")
+                st.stop()
+
+            # 🔗 Prendi estrazione, data, ora dalla previsione esistente
+            ultima = df.iloc[-1]
+            nuova_estrazione = {
+                "estrazione": ultima["Estrazione"],
+                "data": ultima["Data"],
+                "ora": ultima["Ora"]
+            }
+
             numeri, numerone = estratti[:10], estratti[10]
-            nuova_estrazione = genera_data_ora(df)
+
             aggiorna_diario(df, numeri, numerone, nuova_estrazione)
             aggiungi_estrazione(df, numeri, numerone, nuova_estrazione, tipo="REALE")
-            st.success("✅ Estrazione reale aggiunta.")
+            st.success("✅ Estrazione reale aggiunta e sincronizzata con la previsione.")
+
+            # 🔍 Confronto Intelligente
             confronto = confronto_estrazione(df, numeri, numerone)
-
-            st.markdown("### 📊 Confronto Intelligente")
-
             match = confronto["match"]
             numerone_match = confronto["numerone_match"]
             dettaglio = confronto["dettaglio"]
-
             numeri_predetti = dettaglio["numeri_predetti"]
             numeri_reali = dettaglio["numeri_reali"]
             numeri_indovinati = sorted(list(set(numeri_predetti) & set(numeri_reali)))
 
+            st.markdown("### 📊 Confronto Intelligente")
             st.write("🎯 **Numeri Predetti:**", ", ".join(map(str, sorted(numeri_predetti))))
             st.write("🎯 **Numeri Reali:**", ", ".join(map(str, sorted(numeri_reali))))
             st.write("✅ **Numeri Indovinati:**", ", ".join(map(str, numeri_indovinati)))
-
-
             st.markdown("---")
             st.write(f"🔢 **Totale Match:** {match}/10")
             st.write(f"🎯 **Numerone Predetto:** {dettaglio['numerone_predetto']}")
