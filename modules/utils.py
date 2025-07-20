@@ -40,23 +40,16 @@ def genera_data_ora(df):
     ultima = df.iloc[-1]
     estrazione = int(ultima["Estrazione"]) + 1
 
-    # 💡 Legge correttamente date tipo "14/07/2025 08:00"
+    # 🔄 Calcola data e ora
     data = datetime.strptime(f"{ultima['Data']} {ultima['Ora']}", "%d/%m/%Y %H:%M")
-    
     data += timedelta(hours=1)
     if data.hour > 23:
         data += timedelta(days=1)
         data = data.replace(hour=7)
 
-    data += timedelta(hours=1)
-if data.hour > 23:
-    data += timedelta(days=1)
-    data = data.replace(hour=7)
-
-    
     return {
         "estrazione": estrazione,
-        "data": data.strftime("%d/%m/%Y"),  # Giorno/mese/anno in output
+        "data": data.strftime("%d/%m/%Y"),
         "ora": data.strftime("%H:%M")
     }
 
