@@ -38,15 +38,22 @@ from datetime import datetime, timedelta
 def genera_data_ora(df):
     if df.empty:
         return {"estrazione": 1, "data": "19/07/2025", "ora": "07:00"}
-    
+
     ultima = df.iloc[-1]
     estrazione = int(ultima["Estrazione"]) + 1
 
-    # 🔄 Calcola data e ora
+    # Legge la data e ora (formato gg/mm/aaaa)
     data = datetime.strptime(f"{ultima['Data']} {ultima['Ora']}", "%d/%m/%Y %H:%M")
+    
+    # Aggiunge un'ora
     data += timedelta(hours=1)
+
+    # Se supera le 23, passa al giorno dopo alle 07:00
     if data.hour > 23:
         data += timedelta(days=1)
+        data = data.replace(hour=7)
+    # Se è dopo mezzanotte, ma sotto le 07:00 (es. 00:00–06:59), forza a 07:00
+    elif data.hour < 7:
         data = data.replace(hour=7)
 
     return {
@@ -54,6 +61,7 @@ def genera_data_ora(df):
         "data": data.strftime("%d/%m/%Y"),
         "ora": data.strftime("%H:%M")
     }
+
 
 
 def aggiorna_diario(df, numeri, numerone, nuova):
