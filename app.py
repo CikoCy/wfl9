@@ -147,18 +147,22 @@ with st.expander("💥 Memoria degli Errori - Numerone"):
 
 with st.expander("🌌 Analisi della Crepa: Entropia"):
     entropie = analizza_entropia(df)
-    st.line_chart(entropie, height=200)
 
-    # Variazione tra una riga e la precedente
-    variazioni = [abs(entropie[i] - entropie[i-1]) for i in range(1, len(entropie))]
-    media_variazioni = np.mean(variazioni) if variazioni else 0
-
-    if variazioni and variazioni[-1] > 1.5 * media_variazioni:
-        st.error("🚨 Variazione anomala di entropia rilevata. Possibile crepa.")
-    elif entropie[-1] < 2.5:
-        st.warning("⚠️ Entropia insolitamente bassa. Possibile ricorrenza sospetta.")
+    if len(entropie) < 3:
+        st.info("⚠️ Non ci sono abbastanza estrazioni valide per calcolare l'entropia.")
     else:
-        st.success("✅ Nessuna crepa rilevata in questa estrazione.")
+        st.line_chart(entropie, height=200)
+
+        variazioni = [abs(entropie[i] - entropie[i-1]) for i in range(1, len(entropie))]
+        media_variazioni = np.mean(variazioni)
+
+        if variazioni and variazioni[-1] > 1.5 * media_variazioni:
+            st.error("🚨 Variazione anomala di entropia rilevata. Possibile crepa.")
+        elif entropie[-1] < 2.5:
+            st.warning("⚠️ Entropia insolitamente bassa. Possibile ricorrenza sospetta.")
+        else:
+            st.success("✅ Nessuna crepa rilevata in questa estrazione.")
+
 
 
 
