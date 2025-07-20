@@ -1,7 +1,7 @@
 import pandas as pd
 import ast
 
-def load_storico(path="storico.csv"):
+def load_storico(path="dati/storico.csv"):
     try:
         df = pd.read_csv(path)
         if df.empty:
