@@ -6,6 +6,8 @@ from math import log2
 def calcola_entropia(estrazione):
     counter = Counter(estrazione)
     totale = sum(counter.values())
+    if totale == 0:
+        return 0
     return -sum((c / totale) * log2(c / totale) for c in counter.values())
 
 def analizza_entropia(df):
@@ -13,7 +15,12 @@ def analizza_entropia(df):
     for i, row in df.iterrows():
         numeri = row["10 Numeri"]
         if isinstance(numeri, str):
-            numeri = eval(numeri)
+            try:
+                numeri = eval(numeri)
+            except:
+                numeri = []
+        if not isinstance(numeri, list) or len(numeri) != 10:
+            continue  # Salta righe malformate
         entropia = calcola_entropia(numeri)
         entropie.append(entropia)
     return entropie
