@@ -67,9 +67,10 @@ if estrazione_input:
             numeri_reali = dettaglio["numeri_reali"]
             numeri_indovinati = sorted(list(set(numeri_predetti) & set(numeri_reali)))
 
-            st.write("🎯 **Numeri Predetti:**", sorted(numeri_predetti))
-            st.write("🎯 **Numeri Reali:**", sorted(numeri_reali))
-            st.write("✅ **Numeri Indovinati:**", numeri_indovinati)
+            st.write("🎯 **Numeri Predetti:**", ", ".join(map(str, sorted(numeri_predetti))))
+            st.write("🎯 **Numeri Reali:**", ", ".join(map(str, sorted(numeri_reali))))
+            st.write("✅ **Numeri Indovinati:**", ", ".join(map(str, numeri_indovinati)))
+
 
             st.markdown("---")
             st.write(f"🔢 **Totale Match:** {match}/10")
