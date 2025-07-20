@@ -10,6 +10,8 @@ from modules.analisi_numeri import (
 from modules.utils import confronto_estrazione, aggiungi_estrazione, genera_data_ora, aggiorna_diario
 from modules.utils import rendi_10_univoci
 from modules.memoria_errori import analizza_errori
+from modules.memoria_successi import analizza_successi
+
 
 
 st.set_page_config(page_title="WFL 9.0", layout="centered", initial_sidebar_state="collapsed")
@@ -110,9 +112,14 @@ with st.expander("📖 Diario delle estrazioni"):
 with st.expander("🧠 Memoria degli Errori"):
     errori = analizza_errori(df)
     st.write("📉 **Errori per numero (orizzontale):**")
-
     riga = " | ".join([f"{n}: {errori[n]}" for n in range(1, 21)])
     st.markdown(f"`{riga}`")
+
+with st.expander("🎯 Memoria dei Successi"):
+    successi = analizza_successi(df)
+    riga = " | ".join([f"{n}: {successi[n]}" for n in range(1, 21)])
+    st.markdown(f"`{riga}`")
+
 
 st.markdown("### 📂 Visualizzazione Storico Intelligente")
 
