@@ -1,6 +1,7 @@
 
 import streamlit as st
 import matplotlib.pyplot as plt
+import numpy as np
 from modules.data_loader import load_storico
 from modules.analisi_numeri import (
     calcola_statistiche,
