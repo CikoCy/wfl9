@@ -11,7 +11,7 @@ from modules.utils import confronto_estrazione, aggiungi_estrazione, genera_data
 from modules.utils import rendi_10_univoci
 from modules.memoria_errori import analizza_errori, analizza_errori_numerone
 from modules.memoria_successi import analizza_successi, analizza_successi_numerone
-
+from modules.pesatura_adattiva import calcola_pesi_adattivi, genera_previsione_con_pesi
 
 
 st.set_page_config(page_title="WFL 9.0", layout="centered", initial_sidebar_state="collapsed")
@@ -28,27 +28,27 @@ else:
     st.dataframe(df.tail(3))
     
 
-st.markdown("### 🧠 Previsione Intelligente (basata su successi ed errori)")
+st.markdown("### 🧠 Previsione Intelligente (adattata a successi ed errori)")
 
 if st.button("Genera Previsione Intelligente"):
-
-    # Se esiste già una previsione, non rigenerare
     if "Tipo" in df.columns and len(df) > 0 and df.iloc[-1]["Tipo"] == "PREVISIONE":
-        st.warning("⚠️ Hai già una previsione in attesa di conferma. Inserisci prima l'estrazione reale.")
+        st.warning("⚠️ Hai già una previsione in attesa di conferma.")
     else:
-        # Calcola pesi solo sulle REALI
-        pesi_numeri = calcola_statistiche(df[df["Tipo"] == "REALE"] if "Tipo" in df.columns else df)
-        pesi_numeroni = calcola_pesi_numerone(df[df["Tipo"] == "REALE"] if "Tipo" in df.columns else df)
+        successi = analizza_successi(df)
+        errori = analizza_errori(df)
+        successi_n = analizza_successi_numerone(df)
+        errori_n = analizza_errori_numerone(df)
 
-        pred_numeri = predict_next_intelligente(pesi_numeri)
-        pred_numeri = rendi_10_univoci(pred_numeri)
-        pred_numerone = scegli_numerone_intelligente(pesi_numeroni)
+        pesi = calcola_pesi_adattivi(successi, errori)
+        pesi_numerone = calcola_pesi_adattivi(successi_n, errori_n)
+
+        pred_numeri = genera_previsione_con_pesi(pesi)
+        pred_numerone = genera_previsione_con_pesi(pesi_numerone, k=1)[0]
 
         nuova_estrazione = genera_data_ora(df)
         aggiungi_estrazione(df, pred_numeri, pred_numerone, nuova_estrazione, tipo="PREVISIONE")
 
-        st.success(f"✅ Previsione registrata: {sorted(pred_numeri)} + Numerone {pred_numerone}")
-
+        st.success(f"✅ Previsione adattiva registrata: {sorted(pred_numeri)} + Numerone {pred_numerone}")
 
 
 st.markdown("### 🎯 Inserisci nuova estrazione reale")
