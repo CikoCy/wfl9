@@ -37,7 +37,7 @@ if st.button("Genera Previsione Intelligente"):
     pred_numerone = scegli_numerone_intelligente(pesi_numeroni)
 
     nuova_estrazione = genera_data_ora(df)
-    aggiungi_estrazione(df, pred_numeri, pred_numerone, nuova_estrazione)
+    aggiungi_estrazione(df, pred_numeri, pred_numerone, nuova_estrazione, tipo="PREVISIONE")
 
     st.success(f"✅ Previsione registrata: {sorted(pred_numeri)} + Numerone {pred_numerone}")
 
@@ -53,7 +53,7 @@ if estrazione_input:
             numeri, numerone = estratti[:10], estratti[10]
             nuova_estrazione = genera_data_ora(df)
             aggiorna_diario(df, numeri, numerone, nuova_estrazione)
-            aggiungi_estrazione(df, numeri, numerone, nuova_estrazione)
+            aggiungi_estrazione(df, numeri, numerone, nuova_estrazione, tipo="REALE")
             st.success("✅ Estrazione reale aggiunta.")
             confronto = confronto_estrazione(df, numeri, numerone)
 
