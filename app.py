@@ -28,21 +28,23 @@ else:
 st.markdown("### 🧠 Previsione Intelligente (basata su successi ed errori)")
 
 if st.button("Genera Previsione Intelligente"):
-    pesi_numeri = calcola_statistiche(df)
-    pesi_numeroni = calcola_pesi_numerone(df)
 
-    pred_numeri = predict_next_intelligente(pesi_numeri)
-    pred_numeri = rendi_10_univoci(pred_numeri)
+    # Se esiste già una previsione, non rigenerare
+    if "Tipo" in df.columns and len(df) > 0 and df.iloc[-1]["Tipo"] == "PREVISIONE":
+        st.warning("⚠️ Hai già una previsione in attesa di conferma. Inserisci prima l'estrazione reale.")
+    else:
+        # Calcola pesi solo sulle REALI
+        pesi_numeri = calcola_statistiche(df[df["Tipo"] == "REALE"] if "Tipo" in df.columns else df)
+        pesi_numeroni = calcola_pesi_numerone(df[df["Tipo"] == "REALE"] if "Tipo" in df.columns else df)
 
-    pred_numerone = scegli_numerone_intelligente(pesi_numeroni)
+        pred_numeri = predict_next_intelligente(pesi_numeri)
+        pred_numeri = rendi_10_univoci(pred_numeri)
+        pred_numerone = scegli_numerone_intelligente(pesi_numeroni)
 
-    # Genera nuova estrazione solo se non esiste una previsione in attesa
-if "Tipo" in df.columns and (len(df) > 0 and df.iloc[-1]["Tipo"] == "PREVISIONE"):
-    st.warning("⚠️ Hai già una previsione in attesa di conferma. Inserisci prima l'estrazione reale.")
-else:
-    nuova_estrazione = genera_data_ora(df)
-    aggiungi_estrazione(df, pred_numeri, pred_numerone, nuova_estrazione, tipo="PREVISIONE")
-    st.success(f"✅ Previsione registrata: {sorted(pred_numeri)} + Numerone {pred_numerone}")
+        nuova_estrazione = genera_data_ora(df)
+        aggiungi_estrazione(df, pred_numeri, pred_numerone, nuova_estrazione, tipo="PREVISIONE")
+
+        st.success(f"✅ Previsione registrata: {sorted(pred_numeri)} + Numerone {pred_numerone}")
 
 
 
