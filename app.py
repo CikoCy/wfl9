@@ -9,6 +9,7 @@ from modules.analisi_numeri import (
 )
 from modules.utils import confronto_estrazione, aggiungi_estrazione, genera_data_ora, aggiorna_diario
 from modules.utils import rendi_10_univoci
+from modules.memoria_errori import analizza_errori
 
 
 st.set_page_config(page_title="WFL 9.0", layout="centered", initial_sidebar_state="collapsed")
