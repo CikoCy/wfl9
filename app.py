@@ -56,25 +56,26 @@ if estrazione_input:
             aggiungi_estrazione(df, numeri, numerone, nuova_estrazione)
             st.success("✅ Estrazione reale aggiunta.")
             confronto = confronto_estrazione(df, numeri, numerone)
+
             st.markdown("### 📊 Confronto Intelligente")
 
-match = confronto["match"]
-numerone_match = confronto["numerone_match"]
-dettaglio = confronto["dettaglio"]
+            match = confronto["match"]
+            numerone_match = confronto["numerone_match"]
+            dettaglio = confronto["dettaglio"]
 
-numeri_predetti = dettaglio["numeri_predetti"]
-numeri_reali = dettaglio["numeri_reali"]
-numeri_indovinati = sorted(list(set(numeri_predetti) & set(numeri_reali)))
+            numeri_predetti = dettaglio["numeri_predetti"]
+            numeri_reali = dettaglio["numeri_reali"]
+            numeri_indovinati = sorted(list(set(numeri_predetti) & set(numeri_reali)))
 
-st.write("🎯 **Numeri Predetti:**", sorted(numeri_predetti))
-st.write("🎯 **Numeri Reali:**", sorted(numeri_reali))
-st.write("✅ **Numeri Indovinati:**", numeri_indovinati)
+            st.write("🎯 **Numeri Predetti:**", sorted(numeri_predetti))
+            st.write("🎯 **Numeri Reali:**", sorted(numeri_reali))
+            st.write("✅ **Numeri Indovinati:**", numeri_indovinati)
 
-st.markdown("---")
-st.write(f"🔢 **Totale Match:** {match}/10")
-st.write(f"🎯 **Numerone Predetto:** {dettaglio['numerone_predetto']}")
-st.write(f"🎯 **Numerone Reale:** {dettaglio['numerone_reale']}")
-st.markdown(f"💥 **Numerone Match:** {'✔️' if numerone_match else '❌'}")
+            st.markdown("---")
+            st.write(f"🔢 **Totale Match:** {match}/10")
+            st.write(f"🎯 **Numerone Predetto:** {dettaglio['numerone_predetto']}")
+            st.write(f"🎯 **Numerone Reale:** {dettaglio['numerone_reale']}")
+            st.markdown(f"💥 **Numerone Match:** {'✔️' if numerone_match else '❌'}")
 
     except Exception as e:
         st.error(f"Errore: {e}")
