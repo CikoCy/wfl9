@@ -7,12 +7,14 @@ def salva_su_git(commit_msg="🔄 Aggiornamento automatico da WFL 9.0"):
         subprocess.run(["git", "config", "--global", "user.name", "wfl-bot"], check=True)
         subprocess.run(["git", "config", "--global", "user.email", "bot@wfl9.app"], check=True)
 
-        # Verifica esistenza dei file prima di aggiungerli
+        # File da salvare (aggiunti anche quelli mancanti)
         files_da_salvare = [
             "dati/storico.csv",
             "dati/diario.txt",
             "dati/memoria_errori.csv",
+            "dati/memoria_errori_numerone.csv",
             "dati/memoria_successi.csv",
+            "dati/memoria_successi_numerone.csv",
             "dati/entropie.csv"
         ]
 
