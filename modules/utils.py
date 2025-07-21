@@ -1,4 +1,3 @@
-
 import pandas as pd
 from datetime import datetime, timedelta
 
@@ -30,10 +29,7 @@ def aggiungi_estrazione(df, numeri, numerone, nuova, tipo="REALE"):
         "Tipo": tipo
     }
     df = pd.concat([df, pd.DataFrame([nuova_riga])], ignore_index=True)
-    df.to_csv("storico.csv", index=False)
-
-
-from datetime import datetime, timedelta
+    df.to_csv("dati/storico.csv", index=False)
 
 def genera_data_ora(df):
     if df.empty:
@@ -44,7 +40,7 @@ def genera_data_ora(df):
 
     # Legge la data e ora (formato gg/mm/aaaa)
     data = datetime.strptime(f"{ultima['Data']} {ultima['Ora']}", "%d/%m/%Y %H:%M")
-    
+
     # Aggiunge un'ora
     data += timedelta(hours=1)
 
@@ -62,14 +58,11 @@ def genera_data_ora(df):
         "ora": data.strftime("%H:%M")
     }
 
-
-
 def aggiorna_diario(df, numeri, numerone, nuova):
     with open("diario.txt", "a") as f:
         f.write(f"[{nuova['estrazione']}] {nuova['data']} {nuova['ora']} => {numeri} + Numerone {numerone}\n")
         confronto = confronto_estrazione(df, numeri, numerone)
         f.write(f" --> Match: {confronto['match']} numeri, Numerone: {'✔️' if confronto['numerone_match'] else '❌'}\n\n")
-
 
 def rendi_10_univoci(numeri_predetti):
     numeri_finali = []
@@ -89,4 +82,3 @@ def rendi_10_univoci(numeri_predetti):
             numeri_finali.append(n)
 
     return numeri_finali
-
