@@ -40,7 +40,9 @@ if st.button("Genera Previsione Intelligente"):
 
         nuova_estrazione = genera_data_ora(df)
         aggiungi_estrazione(df, pred_numeri, pred_numerone, nuova_estrazione, tipo="PREVISIONE")
-        salva_su_git("📅 Nuova previsione registrata da WFL 9.0")
+        salva_su_git("💾 Nuova previsione registrata da WFL 9.0")
+
+        # ✅ AGGIORNA df DOPO AVER SALVATO
         df = load_storico()
 
         st.success(f"✅ Previsione auto-ottimizzata: {sorted(pred_numeri)} + Numerone {pred_numerone}")
