@@ -52,7 +52,8 @@ if st.button("Genera Previsione Intelligente"):
         st.warning("⚠️ Hai già una previsione in attesa di conferma.")
     else:
         pred_numeri, pesi_usati = genera_lista_ottimizzata()
-        pred_numerone = np.random.choice(pred_numeri)
+        pred_numeri = [int(n) for n in pred_numeri]  # 🔁 Conversione forzata in int
+        pred_numerone = int(np.random.choice(pred_numeri))
 
         nuova_estrazione = genera_data_ora(df)
         aggiungi_estrazione(df, pred_numeri, pred_numerone, nuova_estrazione, tipo="PREVISIONE")
