@@ -18,10 +18,20 @@ from modules.utils import (
     aggiorna_diario,
     rendi_10_univoci
 )
-from modules.memoria_errori import analizza_errori, analizza_errori_numerone
-from modules.memoria_successi import analizza_successi, analizza_successi_numerone
+from modules.memoria_errori import (
+    analizza_errori,
+    analizza_errori_numerone,
+    salva_errori,
+    salva_errori_numerone
+)
+from modules.memoria_successi import (
+    analizza_successi,
+    analizza_successi_numerone,
+    salva_successi,
+    salva_successi_numerone
+)
 from modules.pesatura_adattiva import calcola_pesi_adattivi, genera_previsione_con_pesi
-from modules.analisi_crepa import analizza_entropia, salva_entropie
+from modules.analisi_crepe import analizza_entropia, salva_entropie
 
 st.set_page_config(page_title="WFL 9.0", layout="centered", initial_sidebar_state="collapsed")
 st.title("🔮 WFL 9.0 - Previsione Win for Life")
@@ -84,7 +94,7 @@ if estrazione_input:
             salva_su_git("🗓️ Estrazione reale sincronizzata con previsione")
             df = load_storico()
 
-            # 🔄 Ricalcolo entropie dopo ogni nuova estrazione reale
+            # 🔄 Ricalcolo entropie
             try:
                 entropie_df = analizza_entropia(df)
                 salva_entropie(entropie_df)
@@ -92,12 +102,21 @@ if estrazione_input:
             except Exception as e:
                 st.warning(f"⚠️ Errore durante aggiornamento entropie: {e}")
 
-            st.success("✅ Estrazione reale aggiunta e sincronizzata con la previsione.")
+            # 🔄 Salvataggio memoria successi / errori
+            try:
+                successi = analizza_successi(df)
+                successi_n = analizza_successi_numerone(df)
+                errori = analizza_errori(df)
+                errori_n = analizza_errori_numerone(df)
+                salva_successi(successi)
+                salva_successi_numerone(successi_n)
+                salva_errori(errori)
+                salva_errori_numerone(errori_n)
+                st.success("🧠 Memorie aggiornate automaticamente.")
+            except Exception as e:
+                st.warning(f"⚠️ Errore durante salvataggio delle memorie: {e}")
 
-            successi = analizza_successi(df)
-            errori = analizza_errori(df)
-            successi_n = analizza_successi_numerone(df)
-            errori_n = analizza_errori_numerone(df)
+            st.success("✅ Estrazione reale aggiunta e sincronizzata con la previsione.")
 
             pesi = calcola_pesi_adattivi(successi, errori)
             pesi_numerone = calcola_pesi_adattivi(successi_n, errori_n)
@@ -124,6 +143,8 @@ if estrazione_input:
 
     except Exception as e:
         st.error(f"Errore: {e}")
+
+# Tutto il resto rimane invariato... (expander, grafici, filtri)
 
 with st.expander("📖 Diario delle estrazioni"):
     try:
