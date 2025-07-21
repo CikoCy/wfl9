@@ -1,5 +1,7 @@
 import pandas as pd
 from datetime import datetime, timedelta
+import os
+
 
 def confronto_estrazione(df, numeri, numerone):
     if df.empty or len(df) < 2:
@@ -29,6 +31,9 @@ def aggiungi_estrazione(df, numeri, numerone, nuova, tipo="REALE"):
         "Tipo": tipo
     }
     df = pd.concat([df, pd.DataFrame([nuova_riga])], ignore_index=True)
+
+    # Assicura che la cartella "dati" esista
+    os.makedirs("dati", exist_ok=True)
     df.to_csv("dati/storico.csv", index=False)
 
 def genera_data_ora(df):
