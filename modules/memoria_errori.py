@@ -61,10 +61,16 @@ def analizza_errori_numerone(df):
 
 def salva_errori(errori):
     os.makedirs("dati", exist_ok=True)
-    df = pd.DataFrame(list(errori.items()), columns=["Numero", "Errori"])
+    df = pd.DataFrame({
+        "Numero": list(errori.keys()),
+        "Errori": list(errori.values())
+    })
     df.to_csv("dati/memoria_errori.csv", index=False)
 
 def salva_errori_numerone(errori_n):
     os.makedirs("dati", exist_ok=True)
-    df = pd.DataFrame(list(errori_n.items()), columns=["Numerone", "Errori"])
+    df = pd.DataFrame({
+        "Numerone": list(errori_n.keys()),
+        "Errori": list(errori_n.values())
+    })
     df.to_csv("dati/memoria_errori_numerone.csv", index=False)
