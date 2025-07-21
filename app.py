@@ -114,7 +114,7 @@ if estrazione_input:
 
 with st.expander("📖 Diario delle estrazioni"):
     try:
-        with open("diario.txt", "r") as f:
+        with open("dati/diario.txt", "r") as f:
             st.text(f.read())
     except FileNotFoundError:
         st.info("Il diario è vuoto o non è stato ancora creato.")
