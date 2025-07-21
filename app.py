@@ -1,4 +1,3 @@
-
 import streamlit as st
 import matplotlib.pyplot as plt
 import numpy as np
@@ -18,20 +17,17 @@ from modules.memoria_successi import analizza_successi, analizza_successi_numero
 from modules.pesatura_adattiva import calcola_pesi_adattivi, genera_previsione_con_pesi
 from modules.analisi_crepa import analizza_entropia
 
-
 st.set_page_config(page_title="WFL 9.0", layout="centered", initial_sidebar_state="collapsed")
 st.title("🔮 WFL 9.0 - Previsione Win for Life")
 
-st.markdown("### 📥 Caricamento storico")
+st.markdown("### 📅 Caricamento storico")
 df = load_storico()
 
 if df is None or df.empty:
     st.warning("⚠️ Storico vuoto o errore nel caricamento.")
     st.stop()
-
 else:
     st.dataframe(df.tail(3))
-    
 
 st.markdown("### 🧠 Previsione Intelligente (adattata a successi ed errori)")
 
@@ -44,7 +40,8 @@ if st.button("Genera Previsione Intelligente"):
 
         nuova_estrazione = genera_data_ora(df)
         aggiungi_estrazione(df, pred_numeri, pred_numerone, nuova_estrazione, tipo="PREVISIONE")
-        salva_su_git("💾 Nuova previsione registrata da WFL 9.0")
+        salva_su_git("📅 Nuova previsione registrata da WFL 9.0")
+        df = load_storico()
 
         st.success(f"✅ Previsione auto-ottimizzata: {sorted(pred_numeri)} + Numerone {pred_numerone}")
 
@@ -53,9 +50,7 @@ if st.button("Genera Previsione Intelligente"):
         ax.set_title("Distribuzione pesi auto-ottimizzati")
         st.pyplot(fig)
 
-
-
-st.markdown("### 🎯 Inserisci nuova estrazione reale")
+st.markdown("### 🌟 Inserisci nuova estrazione reale")
 estrazione_input = st.text_input("Inserisci i 10 numeri + numerone separati da spazio (es: 1 2 3 4 5 6 7 8 9 10 15)")
 
 if estrazione_input:
@@ -64,12 +59,10 @@ if estrazione_input:
         if len(estratti) != 11:
             st.error("Devi inserire esattamente 10 numeri + 1 numerone.")
         else:
-            # ⚠️ Controlla se esiste una previsione da confermare
             if len(df) == 0 or df.iloc[-1]["Tipo"] != "PREVISIONE":
                 st.error("❌ Nessuna previsione da confermare. Genera prima una previsione.")
                 st.stop()
 
-            # 🔗 Prendi estrazione, data, ora dalla previsione esistente
             ultima = df.iloc[-1]
             nuova_estrazione = {
                 "estrazione": ultima["Estrazione"],
@@ -81,18 +74,11 @@ if estrazione_input:
 
             aggiorna_diario(df, numeri, numerone, nuova_estrazione)
             aggiungi_estrazione(df, numeri, numerone, nuova_estrazione, tipo="REALE")
-            salva_su_git("📥 Estrazione reale sincronizzata con previsione")
+            salva_su_git("📅 Estrazione reale sincronizzata con previsione")
+            df = load_storico()
 
             st.success("✅ Estrazione reale aggiunta e sincronizzata con la previsione.")
 
-
-            numeri, numerone = estratti[:10], estratti[10]
-
-            aggiorna_diario(df, numeri, numerone, nuova_estrazione)
-            aggiungi_estrazione(df, numeri, numerone, nuova_estrazione, tipo="REALE")
-            st.success("✅ Estrazione reale aggiunta e sincronizzata con la previsione.")
-
-            # 🔁 Auto-ottimizzazione: aggiorna i pesi dinamicamente dopo ogni estrazione reale
             successi = analizza_successi(df)
             errori = analizza_errori(df)
             successi_n = analizza_successi_numerone(df)
@@ -103,8 +89,6 @@ if estrazione_input:
 
             st.info("🔄 Auto-ottimizzazione eseguita: pesi aggiornati.")
 
-
-            # 🔍 Confronto Intelligente
             confronto = confronto_estrazione(df, numeri, numerone)
             match = confronto["match"]
             numerone_match = confronto["numerone_match"]
@@ -114,18 +98,17 @@ if estrazione_input:
             numeri_indovinati = sorted(list(set(numeri_predetti) & set(numeri_reali)))
 
             st.markdown("### 📊 Confronto Intelligente")
-            st.write("🎯 **Numeri Predetti:**", ", ".join(map(str, sorted(numeri_predetti))))
-            st.write("🎯 **Numeri Reali:**", ", ".join(map(str, sorted(numeri_reali))))
+            st.write("🌟 **Numeri Predetti:**", ", ".join(map(str, sorted(numeri_predetti))))
+            st.write("🌟 **Numeri Reali:**", ", ".join(map(str, sorted(numeri_reali))))
             st.write("✅ **Numeri Indovinati:**", ", ".join(map(str, numeri_indovinati)))
             st.markdown("---")
             st.write(f"🔢 **Totale Match:** {match}/10")
-            st.write(f"🎯 **Numerone Predetto:** {dettaglio['numerone_predetto']}")
-            st.write(f"🎯 **Numerone Reale:** {dettaglio['numerone_reale']}")
+            st.write(f"🌟 **Numerone Predetto:** {dettaglio['numerone_predetto']}")
+            st.write(f"🌟 **Numerone Reale:** {dettaglio['numerone_reale']}")
             st.markdown(f"💥 **Numerone Match:** {'✔️' if numerone_match else '❌'}")
 
     except Exception as e:
         st.error(f"Errore: {e}")
-
 
 with st.expander("📖 Diario delle estrazioni"):
     try:
@@ -140,12 +123,12 @@ with st.expander("🧠 Memoria degli Errori"):
     riga = " | ".join([f"{n}: {errori[n]}" for n in range(1, 21)])
     st.markdown(f"`{riga}`")
 
-with st.expander("🎯 Memoria dei Successi"):
+with st.expander("🌟 Memoria dei Successi"):
     successi = analizza_successi(df)
     riga = " | ".join([f"{n}: {successi[n]}" for n in range(1, 21)])
     st.markdown(f"`{riga}`")
 
-with st.expander("🎯 Memoria dei Successi - Numerone"):
+with st.expander("🌟 Memoria dei Successi - Numerone"):
     successi_n = analizza_successi_numerone(df)
     riga = " | ".join([f"{n}: {successi_n[n]}" for n in range(1, 21)])
     st.markdown(f"`{riga}`")
@@ -172,9 +155,6 @@ with st.expander("🌌 Analisi della Crepa: Entropia"):
             st.warning("⚠️ Entropia insolitamente bassa. Possibile ricorrenza sospetta.")
         else:
             st.success("✅ Nessuna crepa rilevata in questa estrazione.")
-
-
-
 
 st.markdown("### 📂 Visualizzazione Storico Intelligente")
 
@@ -206,5 +186,3 @@ with st.expander("📊 Grafico Successi vs Errori"):
     ax.set_title("Successi e Errori accumulati per numero")
     ax.legend()
     st.pyplot(fig)
-
-
