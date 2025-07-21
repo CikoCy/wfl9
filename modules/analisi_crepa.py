@@ -24,14 +24,13 @@ def analizza_entropia(df):
         if not isinstance(numeri, list) or len(numeri) != 10:
             continue  # Salta righe malformate
         entropia = calcola_entropia(numeri)
-        entropie.append({
-            "Estrazione": row["Estrazione"],
-            "Data": row["Data"],
-            "Ora": row["Ora"],
-            "Entropia": entropia
-        })
-    return pd.DataFrame(entropie)
+        entropie.append(entropia)
+    return entropie
 
-def salva_entropie(df_entropie):
+def salva_entropie(entropie):
     os.makedirs("dati", exist_ok=True)
-    df_entropie.to_csv("dati/entropie.csv", index=False)
+    df = pd.read_csv("dati/storico.csv")
+    df_validi = df[df["Tipo"] == "REALE"].copy()
+    df_validi = df_validi.iloc[-len(entropie):].copy()
+    df_validi["Entropia"] = entropie
+    df_validi[["Estrazione", "Data", "Ora", "Entropia"]].to_csv("dati/entropie.csv", index=False)
