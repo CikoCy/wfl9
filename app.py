@@ -47,6 +47,10 @@ if st.button("Genera Previsione Intelligente"):
 
         st.success(f"✅ Previsione auto-ottimizzata: {sorted(pred_numeri)} + Numerone {pred_numerone}")
 
+        aggiungi_estrazione(df, pred_numeri, pred_numerone, nuova_estrazione, tipo="PREVISIONE")
+        salva_su_git("💾 Nuova previsione registrata da WFL 9.0")
+
+
         fig, ax = plt.subplots()
         ax.bar(range(1, 21), pesi_usati)
         ax.set_title("Distribuzione pesi auto-ottimizzati")
@@ -66,6 +70,10 @@ if estrazione_input:
             if len(df) == 0 or df.iloc[-1]["Tipo"] != "PREVISIONE":
                 st.error("❌ Nessuna previsione da confermare. Genera prima una previsione.")
                 st.stop()
+
+            aggiungi_estrazione(df, numeri, numerone, nuova_estrazione, tipo="REALE")
+            salva_su_git("📥 Estrazione reale sincronizzata con previsione")
+
 
             # 🔗 Prendi estrazione, data, ora dalla previsione esistente
             ultima = df.iloc[-1]
