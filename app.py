@@ -44,17 +44,15 @@ if st.button("Genera Previsione Intelligente"):
 
         nuova_estrazione = genera_data_ora(df)
         aggiungi_estrazione(df, pred_numeri, pred_numerone, nuova_estrazione, tipo="PREVISIONE")
-
-        st.success(f"✅ Previsione auto-ottimizzata: {sorted(pred_numeri)} + Numerone {pred_numerone}")
-
-        aggiungi_estrazione(df, pred_numeri, pred_numerone, nuova_estrazione, tipo="PREVISIONE")
         salva_su_git("💾 Nuova previsione registrata da WFL 9.0")
 
+        st.success(f"✅ Previsione auto-ottimizzata: {sorted(pred_numeri)} + Numerone {pred_numerone}")
 
         fig, ax = plt.subplots()
         ax.bar(range(1, 21), pesi_usati)
         ax.set_title("Distribuzione pesi auto-ottimizzati")
         st.pyplot(fig)
+
 
 
 st.markdown("### 🎯 Inserisci nuova estrazione reale")
@@ -71,10 +69,6 @@ if estrazione_input:
                 st.error("❌ Nessuna previsione da confermare. Genera prima una previsione.")
                 st.stop()
 
-            aggiungi_estrazione(df, numeri, numerone, nuova_estrazione, tipo="REALE")
-            salva_su_git("📥 Estrazione reale sincronizzata con previsione")
-
-
             # 🔗 Prendi estrazione, data, ora dalla previsione esistente
             ultima = df.iloc[-1]
             nuova_estrazione = {
@@ -82,6 +76,15 @@ if estrazione_input:
                 "data": ultima["Data"],
                 "ora": ultima["Ora"]
             }
+
+            numeri, numerone = estratti[:10], estratti[10]
+
+            aggiorna_diario(df, numeri, numerone, nuova_estrazione)
+            aggiungi_estrazione(df, numeri, numerone, nuova_estrazione, tipo="REALE")
+            salva_su_git("📥 Estrazione reale sincronizzata con previsione")
+
+            st.success("✅ Estrazione reale aggiunta e sincronizzata con la previsione.")
+
 
             numeri, numerone = estratti[:10], estratti[10]
 
