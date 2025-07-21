@@ -1,9 +1,10 @@
 import pandas as pd
+import os
+import ast
 
 def analizza_errori(df):
     """
-    Analizza lo storico per contare quante volte ogni numero NON è stato indovinato
-    nelle previsioni confrontate con le estrazioni reali.
+    Conta quante volte ogni numero NON è stato indovinato nelle previsioni confrontate con le estrazioni reali.
     """
     errori = {n: 0 for n in range(1, 21)}
 
@@ -18,28 +19,23 @@ def analizza_errori(df):
             predetti = riga_prev["10 Numeri"]
             reali = riga_reale["10 Numeri"]
 
-            # Sicurezza: assicurati che siano liste
             if isinstance(predetti, str):
                 try:
-                    predetti = eval(predetti)
+                    predetti = ast.literal_eval(predetti)
                 except:
                     predetti = []
             if isinstance(reali, str):
                 try:
-                    reali = eval(reali)
+                    reali = ast.literal_eval(reali)
                 except:
                     reali = []
 
-            predetti_set = set(predetti)
-            reali_set = set(reali)
-
-            non_presi = predetti_set - reali_set
+            non_presi = set(predetti) - set(reali)
             for n in non_presi:
                 if n in errori:
                     errori[n] += 1
 
     return errori
-
 
 def analizza_errori_numerone(df):
     """
@@ -62,3 +58,13 @@ def analizza_errori_numerone(df):
                 errori[predetto] += 1
 
     return errori
+
+def salva_errori(errori):
+    os.makedirs("dati", exist_ok=True)
+    df = pd.DataFrame(list(errori.items()), columns=["Numero", "Errori"])
+    df.to_csv("dati/memoria_errori.csv", index=False)
+
+def salva_errori_numerone(errori_n):
+    os.makedirs("dati", exist_ok=True)
+    df = pd.DataFrame(list(errori_n.items()), columns=["Numerone", "Errori"])
+    df.to_csv("dati/memoria_errori_numerone.csv", index=False)
