@@ -2,6 +2,7 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 import numpy as np
+from modules.modulo_git import salva_su_git
 from modules.modulo_auto_ottimizzazione import genera_lista_ottimizzata
 from modules.data_loader import load_storico
 from modules.analisi_numeri import (
