@@ -12,6 +12,7 @@ def salva_su_git(commit_msg="🔄 Aggiornamento automatico da WFL 9.0"):
         subprocess.run(["git", "add", "dati/diario.txt"], check=True)
         subprocess.run(["git", "add", "dati/memoria_errori.csv"], check=True)
         subprocess.run(["git", "add", "dati/memoria_successi.csv"], check=True)
+        subprocess.run(["git", "add", "dati/entropie.csv"], check=True)
 
         # Commit
         subprocess.run(["git", "commit", "-m", commit_msg], check=True)
