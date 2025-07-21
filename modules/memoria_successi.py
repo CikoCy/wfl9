@@ -61,10 +61,16 @@ def analizza_successi_numerone(df):
 
 def salva_successi(successi):
     os.makedirs("dati", exist_ok=True)
-    df = pd.DataFrame(list(successi.items()), columns=["Numero", "Successi"])
+    df = pd.DataFrame({
+        "Numero": list(successi.keys()),
+        "Successi": list(successi.values())
+    })
     df.to_csv("dati/memoria_successi.csv", index=False)
 
 def salva_successi_numerone(successi_n):
     os.makedirs("dati", exist_ok=True)
-    df = pd.DataFrame(list(successi_n.items()), columns=["Numerone", "Successi"])
+    df = pd.DataFrame({
+        "Numerone": list(successi_n.keys()),
+        "Successi": list(successi_n.values())
+    })
     df.to_csv("dati/memoria_successi_numerone.csv", index=False)
