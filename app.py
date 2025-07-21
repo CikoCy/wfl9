@@ -31,7 +31,7 @@ from modules.memoria_successi import (
     salva_successi_numerone
 )
 from modules.pesatura_adattiva import calcola_pesi_adattivi, genera_previsione_con_pesi
-from modules.analisi_crepe import analizza_entropia, salva_entropie
+from modules.analisi_crepa import analizza_entropia, salva_entropie
 
 st.set_page_config(page_title="WFL 9.0", layout="centered", initial_sidebar_state="collapsed")
 st.title("🔮 WFL 9.0 - Previsione Win for Life")
