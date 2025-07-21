@@ -1,6 +1,7 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 import numpy as np
+
 from modules.modulo_git import salva_su_git
 from modules.modulo_auto_ottimizzazione import genera_lista_ottimizzata
 from modules.data_loader import load_storico
@@ -10,12 +11,17 @@ from modules.analisi_numeri import (
     calcola_pesi_numerone,
     scegli_numerone_intelligente
 )
-from modules.utils import confronto_estrazione, aggiungi_estrazione, genera_data_ora, aggiorna_diario
-from modules.utils import rendi_10_univoci
+from modules.utils import (
+    confronto_estrazione,
+    aggiungi_estrazione,
+    genera_data_ora,
+    aggiorna_diario,
+    rendi_10_univoci
+)
 from modules.memoria_errori import analizza_errori, analizza_errori_numerone
 from modules.memoria_successi import analizza_successi, analizza_successi_numerone
 from modules.pesatura_adattiva import calcola_pesi_adattivi, genera_previsione_con_pesi
-from modules.analisi_crepa import analizza_entropia
+from modules.analisi_crepe import analizza_entropia, salva_entropie
 
 st.set_page_config(page_title="WFL 9.0", layout="centered", initial_sidebar_state="collapsed")
 st.title("🔮 WFL 9.0 - Previsione Win for Life")
@@ -40,9 +46,8 @@ if st.button("Genera Previsione Intelligente"):
 
         nuova_estrazione = genera_data_ora(df)
         aggiungi_estrazione(df, pred_numeri, pred_numerone, nuova_estrazione, tipo="PREVISIONE")
-        salva_su_git("💾 Nuova previsione registrata da WFL 9.0")
+        salva_su_git("📂 Nuova previsione registrata da WFL 9.0")
 
-        # ✅ AGGIORNA df DOPO AVER SALVATO
         df = load_storico()
 
         st.success(f"✅ Previsione auto-ottimizzata: {sorted(pred_numeri)} + Numerone {pred_numerone}")
@@ -76,8 +81,16 @@ if estrazione_input:
 
             aggiorna_diario(df, numeri, numerone, nuova_estrazione)
             aggiungi_estrazione(df, numeri, numerone, nuova_estrazione, tipo="REALE")
-            salva_su_git("📅 Estrazione reale sincronizzata con previsione")
+            salva_su_git("🗓️ Estrazione reale sincronizzata con previsione")
             df = load_storico()
+
+            # 🔄 Ricalcolo entropie dopo ogni nuova estrazione reale
+            try:
+                entropie_df = analizza_entropia(df)
+                salva_entropie(entropie_df)
+                st.success("📊 Entropie aggiornate automaticamente.")
+            except Exception as e:
+                st.warning(f"⚠️ Errore durante aggiornamento entropie: {e}")
 
             st.success("✅ Estrazione reale aggiunta e sincronizzata con la previsione.")
 
