@@ -7,24 +7,39 @@ def analizza_errori(df):
     """
     errori = {n: 0 for n in range(1, 21)}
 
-    # Serve almeno una previsione + una reale
     if "Tipo" not in df.columns or len(df) < 2:
         return errori
 
-    # Scorri tutte le righe per coppie PREVISIONE + REALE
     for i in range(1, len(df)):
-        riga_prev = df.iloc[i-1]
+        riga_prev = df.iloc[i - 1]
         riga_reale = df.iloc[i]
 
         if riga_prev["Tipo"] == "PREVISIONE" and riga_reale["Tipo"] == "REALE":
-            predetti = set(riga_prev["10 Numeri"])
-            reali = set(riga_reale["10 Numeri"])
+            predetti = riga_prev["10 Numeri"]
+            reali = riga_reale["10 Numeri"]
 
-            non_presi = predetti - reali
+            # Sicurezza: assicurati che siano liste
+            if isinstance(predetti, str):
+                try:
+                    predetti = eval(predetti)
+                except:
+                    predetti = []
+            if isinstance(reali, str):
+                try:
+                    reali = eval(reali)
+                except:
+                    reali = []
+
+            predetti_set = set(predetti)
+            reali_set = set(reali)
+
+            non_presi = predetti_set - reali_set
             for n in non_presi:
-                errori[n] += 1
+                if n in errori:
+                    errori[n] += 1
 
     return errori
+
 
 def analizza_errori_numerone(df):
     """
@@ -43,7 +58,7 @@ def analizza_errori_numerone(df):
             predetto = riga_prev["Numerone"]
             reale = riga_reale["Numerone"]
 
-            if predetto != reale:
+            if predetto != reale and predetto in errori:
                 errori[predetto] += 1
 
     return errori
