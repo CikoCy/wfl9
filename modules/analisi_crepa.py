@@ -41,4 +41,3 @@ def salva_entropie(entropie):
     df_validi = df_validi.copy()
     df_validi["Entropia"] = entropie
     df_validi[["Estrazione", "Data", "Ora", "Entropia"]].to_csv("dati/entropie.csv", index=False)
-
