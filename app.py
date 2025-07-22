@@ -5,9 +5,9 @@ import numpy as np
 from modules.modulo_git import salva_su_git
 from modules.modulo_auto_ottimizzazione import genera_lista_ottimizzata
 from modules.data_loader import load_storico
+from modules.predictor_lstm import fai_previsione
 from modules.analisi_numeri import (
     calcola_statistiche,
-    predict_next_intelligente,
     calcola_pesi_numerone,
     scegli_numerone_intelligente
 )
@@ -36,7 +36,7 @@ from modules.analisi_crepa import analizza_entropia, salva_entropie
 st.set_page_config(page_title="WFL 9.0", layout="centered", initial_sidebar_state="collapsed")
 st.title("🔮 WFL 9.0 - Previsione Win for Life")
 
-st.markdown("### 📅 Caricamento storico")
+st.markdown("### 🗓️ Caricamento storico")
 df = load_storico()
 
 if df is None or df.empty:
@@ -45,28 +45,21 @@ if df is None or df.empty:
 else:
     st.dataframe(df.tail(3))
 
-st.markdown("### 🧠 Previsione Intelligente (adattata a successi ed errori)")
+st.markdown("### 🧠 Previsione Intelligente (rete neurale LSTM)")
 
-if st.button("Genera Previsione Intelligente"):
+if st.button("Genera Previsione LSTM"):
     if "Tipo" in df.columns and len(df) > 0 and df.iloc[-1]["Tipo"] == "PREVISIONE":
         st.warning("⚠️ Hai già una previsione in attesa di conferma.")
     else:
-        pred_numeri, pesi_usati = genera_lista_ottimizzata()
-        pred_numeri = [int(n) for n in pred_numeri]  # 🔁 Conversione forzata in int
-        pred_numerone = int(np.random.choice(pred_numeri))
-
-        nuova_estrazione = genera_data_ora(df)
-        aggiungi_estrazione(df, pred_numeri, pred_numerone, nuova_estrazione, tipo="PREVISIONE")
-        salva_su_git("📂 Nuova previsione registrata da WFL 9.0")
-
-        df = load_storico()
-
-        st.success(f"✅ Previsione auto-ottimizzata: {sorted(pred_numeri)} + Numerone {pred_numerone}")
-
-        fig, ax = plt.subplots()
-        ax.bar(range(1, 21), pesi_usati)
-        ax.set_title("Distribuzione pesi auto-ottimizzati")
-        st.pyplot(fig)
+        try:
+            numeri_predetti, numerone_predetto = fai_previsione(df)
+            nuova_estrazione = genera_data_ora(df)
+            aggiungi_estrazione(df, numeri_predetti, numerone_predetto, nuova_estrazione, tipo="PREVISIONE")
+            salva_su_git("📂 Previsione LSTM registrata da WFL 9.0")
+            df = load_storico()
+            st.success(f"✅ Previsione LSTM: {sorted(numeri_predetti)} + Numerone {numerone_predetto}")
+        except Exception as e:
+            st.error(f"Errore nella generazione LSTM: {e}")
 
 st.markdown("### 🌟 Inserisci nuova estrazione reale")
 estrazione_input = st.text_input("Inserisci i 10 numeri + numerone separati da spazio (es: 1 2 3 4 5 6 7 8 9 10 15)")
@@ -95,7 +88,6 @@ if estrazione_input:
             salva_su_git("🗓️ Estrazione reale sincronizzata con previsione")
             df = load_storico()
 
-            # 🔄 Ricalcolo entropie
             try:
                 entropie_df = analizza_entropia(df)
                 salva_entropie(entropie_df)
@@ -103,7 +95,6 @@ if estrazione_input:
             except Exception as e:
                 st.warning(f"⚠️ Errore durante aggiornamento entropie: {e}")
 
-            # 🔄 Salvataggio memoria successi / errori
             try:
                 successi = analizza_successi(df)
                 successi_n = analizza_successi_numerone(df)
@@ -145,8 +136,7 @@ if estrazione_input:
     except Exception as e:
         st.error(f"Errore: {e}")
 
-# Tutto il resto rimane invariato... (expander, grafici, filtri)
-
+# Sezioni aggiuntive
 with st.expander("📖 Diario delle estrazioni"):
     try:
         with open("dati/diario.txt", "r") as f:
